@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 JENKINS_WAR_HOME='/data/jenkins/.jenkins/jobs/test/workspace/'
-DOCKERFILE_HOME='/data/jenkins/app/test'
+DOCKERFILE_HOME='/data/jenkins/test'
 HARBOR_IP='192.168.1.2'
 REPOSITORIES='test/app'
 GIT_REVISION=`cd /data/jenkins/.jenkins/jobs/test/workspace/ && git log -1 --pretty=format:"%h"`
@@ -16,15 +16,15 @@ if [ -n "${IMAGE_ID}" ];then
     sudo docker rmi ${IMAGE_ID}
 fi
  
-# ´ò°ü¾µÏñ......
+# æ‰“åŒ…é•œåƒ......
 cd ${DOCKERFILE_HOME}
 docker build -t ${HARBOR_IP}/${REPOSITORIES}:${TAG}_${GIT_REVISION} . &>/dev/null
 
-# ÉÏ´«¾µÏñÖÐ¡£¡£¡£¡£¡£
+# ä¸Šä¼ é•œåƒä¸­ã€‚ã€‚ã€‚ã€‚ã€‚
 docker push ${HARBOR_IP}/${REPOSITORIES}:${TAG}_${GIT_REVISION} &>/dev/null
 docker images|grep test|awk '{print $1 ":"  $2}'|head -n 1|xargs docker rmi -f
 
-#´«ËÍ°æ±¾¡£¡£¡£¡£¡£¡£
+#ä¼ é€ç‰ˆæœ¬ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚
 ssh docker@192.168.1.2 "echo ${TAG}_${GIT_REVISION} >/opt/test/tag.txt"
 
 
