@@ -2,36 +2,36 @@ pipeline {
 	agent any
 	
 	environment {
-		REPOSITORY="git@192.168.1.2:/weiyin"
-		SCRIPT_PA="/data/jenkins/test/docker-pipline-test"
+		REPOSITORY="git@192.168.1.2:/test"
+		SCRIPT_PA="/data/jenkins/docker-pipline-test"
 		
 	}
 	
 	stages {
 	
-		stage('获取代码') {
+		stage('鑾峰彇浠ｇ爜') {
 			steps {
 				echo "start  git code  git:${REPOSITORY}"
 				//deleteDir()
-				git branch: 'feature/change_web', credentialsId: 'b9eb105d-b269-43c8-85b0-c7e879bb5f30', url: 'git@192.168.1.2:/weiyin'
+				git branch: 'test', credentialsId: 'b9eb105d-b269-43c8-85b0-c7e879bb5f30', url: 'git@192.168.1.2:/test'
 			}
 		
 		}
-		stage('代码打包') {
+		stage('浠ｇ爜鎵撳寘') {
 			steps {
 				sh 'sh -x ${SCRIPT_PA}/gradle-build.sh'
 			}
 		
 		}
-		stage('构建镜像') {
+		stage('鏋勫缓闀滃儚') {
 			steps {
-				echo "打包docker and 推送到Harbor"
+				echo "鎵撳寘docker and 鎺ㄩ�佸埌Harbor"
 				sh '${SCRIPT_PA}/test.sh'
 			}
 		}
-		stage('部署服务') {
+		stage('閮ㄧ讲鏈嶅姟') {
 			steps {
-				echo "部署docker-compose 主机"
+				echo "閮ㄧ讲docker-compose 涓绘満"
 				sh 'ssh docker@192.168.1.6 "/opt/test/test/test.sh"'
 			}
 		
